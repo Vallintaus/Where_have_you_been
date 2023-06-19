@@ -6,7 +6,7 @@ const formReducer = (state, action) => {
         case 'INPUT_CHANGE':
             let formIsValid = true;
             for ( const inputId in state.inputs) {
-                if (state.inputs[inputId]) {
+                if (!state.inputs[inputId]) {
                     continue
                 }
                 if (inputId === action.inputId) {
@@ -44,7 +44,8 @@ export const useForm = (initialInputs, initialFormValidity) => {
         type: 'INPUT_CHANGE', 
         value: value, 
         isValid: isValid, 
-        inputId: id})
+        inputId: id
+        })
     }, []);
 
     const setFormData = useCallback((inputData, formValidity) => {

@@ -1,16 +1,21 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 
 import Card from "../../shared/components/UIElemets/Card";
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import { VALIDATOR_MINLENGTH, 
     VALIDATOR_EMAIL,
-    VALIDATOR_REQUIRE } from "../../shared/util/validators";
+    VALIDATOR_REQUIRE 
+} from "../../shared/util/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 import './Auth.css'
 
 
 const Auth = () => {
+    const auth = useContext(AuthContext)
+
+
     const [isLoginMode, setIsLoginMode] = useState(true)
     const [formState, inputHandler, setFormData] = useForm({
         email: {
@@ -21,7 +26,8 @@ const Auth = () => {
             value: '',
             isValid: false
         }
-    }, false)
+    }, 
+    false)
 
 
     const switchModeHandler = () => {
@@ -47,6 +53,7 @@ const Auth = () => {
     const authSubmitHandler = event => {
         event.preventDefault();
         console.log(formState.inputs)
+        auth.login()
     }
 
     return (
@@ -54,15 +61,17 @@ const Auth = () => {
             <h2>Login Required</h2>
             <hr />
         <form onSubmit={authSubmitHandler}>
-            {!isLoginMode && <Input 
+            {!isLoginMode && (
+            <Input 
             element="input" 
             id="name" 
             type="text" 
             label="Your name" 
-            validators={[VALIDATOR_REQUIRE]}
+            validators={[VALIDATOR_REQUIRE()]}
             errorText="Please enter name"
             onInput={inputHandler}
-            />}
+            />
+            )}
             <Input  
             element="input"
             id="email"
@@ -85,7 +94,9 @@ const Auth = () => {
                 {isLoginMode ? 'LOGIN' : 'SIGNUP'}
                 </Button>
         </form>
-        <Button inverse onClick={switchModeHandler}>SWITCH TO {isLoginMode ? 'CREATE ACCOUNT' : 'LOGIN'}</Button>
+        <Button inverse onClick={switchModeHandler}>
+            SWITCH TO {isLoginMode ? 'CREATE ACCOUNT' : 'LOGIN'}
+            </Button>
         </Card>
     )
 }
